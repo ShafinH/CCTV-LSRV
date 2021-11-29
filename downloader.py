@@ -1,9 +1,20 @@
-import requests, json, cv2, pytz, time, re, os, subprocess, sys, psutil, signal
+import requests
+import json
+import cv2
+import pytz
+import time
+import re
+import os
+import subprocess
+import sys
+import psutil
+import signal
 from bs4 import BeautifulSoup
 from datetime import datetime, date, timedelta
 from geopy.geocoders import Nominatim
 from subprocess import Popen, PIPE
 import urllib.request
+
 
 class Downloader:
     def __init__(self, file_name):
@@ -11,10 +22,11 @@ class Downloader:
         self.output_dir = "scraped_data/Maryland/"
         with open(file_name, "r") as file:
             self.config = json.load(file)
-        self.urls = [self.config["features"][i]["attributes"].get("CCTVPublicURL") for i in range (len(self.config["features"]))]
-        # print(self.urls[1])
-        self.dirs = [self.config["features"][i]["attributes"].get("location") for i in range (len(self.config["features"]))]
-        for i in range (len(self.dirs)):
+        self.urls = [self.config["features"][i]["attributes"].get(
+            "CCTVPublicURL") for i in range(len(self.config["features"]))]
+        self.dirs = [self.config["features"][i]["attributes"].get(
+            "location") for i in range(len(self.config["features"]))]
+        for i in range(len(self.dirs)):
             self.dirs[i] = self.dirs[i].replace(" ", "_")
             self.dirs[i] = self.dirs[i].replace("|", "")
             path = os.path.join(self.output_dir, self.dirs[i])
@@ -22,14 +34,10 @@ class Downloader:
             if not os.path.exists(path):
                 os.makedirs(path)
 
-        # print(self.dirs)
-        # print(len(self.urls))
-
-        self.lats = [str(self.config["features"][i]["attributes"].get("Latitude")) for i in range (len(self.config["features"]))]
-        # print(self.lats)
-        self.longs = [str(self.config["features"][i]["attributes"].get("Longitude")) for i in range (len(self.config["features"]))]
-        # print(self.longs)
-
+        self.lats = [str(self.config["features"][i]["attributes"].get(
+            "Latitude")) for i in range(len(self.config["features"]))]
+        self.longs = [str(self.config["features"][i]["attributes"].get(
+            "Longitude")) for i in range(len(self.config["features"]))]
 
     def download_image(self, cam_url, file_path, lat, longitude):
         """[summary]
@@ -60,12 +68,11 @@ class Downloader:
 
         end_time = datetime.now(tz_EST) + timedelta(hours=1)
         end_time = end_time.strftime("%H-%M-%S")
-        # print(end_time)
 
         today = date.today()
         today = today.strftime("%m-%d-%y")
 
-        # JSON file name
+        # file name
 
         image_name = today + "_" + start_time
 
@@ -74,7 +81,6 @@ class Downloader:
         url = base_url + "q=" + county + "&appid=" + api_key
         response = requests.get(url)
         data = response.json()
-        # print(data)
         main = data['main']
         temperature = main['temp']
         report = data['weather']
@@ -94,7 +100,7 @@ class Downloader:
             "Weather Description": description
         }
 
-        jsonString  = json.dumps(metadata, indent=4)
+        jsonString = json.dumps(metadata, indent=4)
         jsonFile = open(file_path + "/" + image_name + ".json", "w")
         jsonFile.write(jsonString)
 
@@ -110,7 +116,8 @@ class Downloader:
         urls = re.findall(r'\'(.+?)\'', script)
         download_link = urls[1]
 
-        proc = subprocess.Popen(f"ffmpeg -i \"{download_link}\" -codec copy -t 01:00:00 {file_path}/{image_name}.mp4")
+        proc = subprocess.Popen(
+            f"ffmpeg -i \"{download_link}\" -codec copy -t 01:00:00 {file_path}/{image_name}.mp4")
 
         return proc
 
@@ -120,7 +127,8 @@ class Downloader:
         """
 
         for i in range(len(self.urls)):
-            proc = self.download_image(self.urls[i], self.dirs[i], self.lats[i], self.longs[i])
+            proc = self.download_image(
+                self.urls[i], self.dirs[i], self.lats[i], self.longs[i])
             self.procs.append(proc)
             print(proc)
         for i in range(5):
@@ -130,8 +138,6 @@ class Downloader:
                 proc.start()
         for proc in self.procs:
             proc.terminate()
-
-        # delete()
 
     def delete(self):
         """[summary]

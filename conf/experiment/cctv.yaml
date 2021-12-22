@@ -1,0 +1,5 @@
+# @package _group_
+seed: 1234
+model: ${classifier_model}
+dataset:
+  data_dir: "~/datasets"

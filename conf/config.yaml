@@ -1,0 +1,25 @@
+hydra:
+  run:
+    dir: ./results/${hydra.runtime.choices.experiment}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./results/${hydra.runtime.choices.experiment}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}_${hydra.job.override_dirname}
+  verbose:
+    # which packages are at DEBUG level.
+    - cctv_learning
+
+defaults:
+  - experiment: cctv # chnage to run different experiment
+
+    # Use the configured logging.
+  - override hydra/job_logging: rich
+
+# These are not passed to the experiment, but they can be referenced in experiment configs to prevent duplication.
+classifier_model:
+  hidden_dim: 128
+  learning_rate: 0.001
+
+# These *are* passed (what's inside the experiment key)
+experiment:
+  trainer:
+    max_epochs: 50

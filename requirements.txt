@@ -1,0 +1,18 @@
+torch
+torchvision
+pytorch-lightning
+hydra-core
+omegaconf
+numpy
+rich
+opencv-python
+imageio
+imageio-ffmpeg
+torch
+seaborn
+matplotlib
+
+# development
+black
+flake8
+pytest

@@ -27,7 +27,8 @@ The dataset can be modified in the [```cctv.py```](https://github.com/ShafinH/CC
 
 ### Model
 Pretrained checkpoints can be found in the [```checkpoints```](https://github.com/ShafinH/CCTV-LSRV/tree/main/checkpoints) folder. 
-If training new model, edit [```conv_autoencoder.py```](https://github.com/ShafinH/cctv-learning/blob/main/CCTV-LSRV/models/conv_autoencoder.py) and run main.py
+If training new model, edit [```conv_autoencoder.py```](https://github.com/ShafinH/cctv-learning/blob/main/CCTV-LSRV/models/conv_autoencoder.py) and run main.py. A 
+```results/cctv``` folder will be created where model checkpoint and results can be found.
 ```bash
 python main.py
 ```

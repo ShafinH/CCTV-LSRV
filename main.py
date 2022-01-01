@@ -14,7 +14,7 @@ def cctv(cfg):
     pl.seed_everything(cfg.seed)
 
     train_loader = DataLoader(CCTV())
-    trainer = pl.Trainer(max_epochs=25, devices=1, accelerator="gpu")
+    trainer = pl.Trainer(max_epochs=50, devices=1, accelerator="gpu")
     model = Autoencoder()
 
     trainer.fit(model, train_loader)

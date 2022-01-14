@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
-# 30.4 GB
 import os
 import cv2
 import imageio
-
 
 class Preprocessing:
     def __init__(self, path="D:/Github Repos/CCTV-Accidents/scraped_data/Maryland"):
@@ -13,7 +11,7 @@ class Preprocessing:
         self.mp4s = []
         self.good_mp4s = []
         self.bad_mp4s = []
-        
+
         for file in os.listdir(self.path):
             d = os.path.join(self.path, file)
             if os.path.isdir(d):
@@ -43,13 +41,14 @@ class Preprocessing:
                 if keep_mp4:
                     self.good_mp4s.append(mp4)
                     break
-        
+
     def remove(self):
         self.bad_mp4s = [x for x in p.mp4s if x not in p.good_mp4s]
         for mp4 in self.bad_mp4s:
             os.remove(mp4)
             json = mp4.replace('.mp4', '.JSON')
             os.remove(json)
+
 
 if __name__ == "__main__":
     p = Preprocessing()
